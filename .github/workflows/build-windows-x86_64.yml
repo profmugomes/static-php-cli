@@ -6,9 +6,10 @@ on:
       version:
         required: true
         description: php version to compile
-        default: '8.4'
+        default: '8.5'
         type: choice
         options:
+          - '8.5'
           - '8.4'
           - '8.3'
           - '8.2'
@@ -90,7 +91,7 @@ jobs:
         run: ./bin/spc download --with-php="${{ inputs.version }}" --for-extensions="${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_PRE_BUILT }}
 
       # Run build command
-      - run: ./bin/spc build "${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_BUILD_CLI }} ${{ env.SPC_BUILD_MICRO }} ${{ env.SPC_BUILD_FPM }}
+      - run: ./bin/spc build "${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_BUILD_CLI }} ${{ env.SPC_BUILD_MICRO }}
 
       # Upload cli executable
       - if: ${{ inputs.build-cli == true }}

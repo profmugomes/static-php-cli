@@ -22,6 +22,9 @@ on:
       build-micro:
         description: build phpmicro binary
         type: boolean
+      build-cgi:
+        description: build cgi binary
+        type: boolean
       extensions:
         description: extensions to compile (comma separated)
         required: true
@@ -83,6 +86,8 @@ jobs:
         run: echo "SPC_BUILD_CLI=--build-cli" >> $env:GITHUB_ENV
       - if: ${{ inputs.build-micro == true }}
         run: echo "SPC_BUILD_MICRO=--build-micro" >> $env:GITHUB_ENV
+      - if: ${{ inputs.build-cgi == true }}
+        run: echo "SPC_BUILD_CGI=--build-cgi" >> $env:GITHUB_ENV
 
       - run: ./bin/spc doctor
 
@@ -91,7 +96,7 @@ jobs:
         run: ./bin/spc download --with-php="${{ inputs.version }}" --for-extensions="${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_PRE_BUILT }}
 
       # Run build command
-      - run: ./bin/spc build "${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_BUILD_CLI }} ${{ env.SPC_BUILD_MICRO }}
+      - run: ./bin/spc build "${{ inputs.extensions }}" ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_BUILD_CLI }} ${{ env.SPC_BUILD_MICRO }} ${{ env.SPC_BUILD_CGI }}
 
       # Upload cli executable
       - if: ${{ inputs.build-cli == true }}
@@ -106,6 +111,13 @@ jobs:
         with:
           name: micro-${{ inputs.version }}
           path: buildroot/bin/micro.sfx
+
+      # Upload cgi executable
+      - if: ${{ inputs.build-cgi == true }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: php-cgi-${{ inputs.version }}
+          path: buildroot/bin/php-cgi.exe
 
       # Upload extensions metadata
       - uses: actions/upload-artifact@v7

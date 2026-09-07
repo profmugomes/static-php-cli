@@ -18,9 +18,10 @@ on:
       php-version:
         required: true
         description: PHP version to compile
-        default: '8.4'
+        default: '8.5'
         type: choice
         options:
+          - '8.5'
           - '8.4'
           - '8.3'
           - '8.2'
@@ -78,7 +79,7 @@ on:
       php-version:
         required: true
         description: PHP version to compile
-        default: '8.4'
+        default: '8.5'
         type: string
       extensions:
         description: Extensions to build (comma separated)
@@ -220,7 +221,7 @@ jobs:
           echo 'build='"$BUILD_CMD" >> "$GITHUB_OUTPUT"
           echo 'run='"$RUNS_ON" >> "$GITHUB_OUTPUT"
   build:
-    name: "Build ${{ inputs.version }} on ${{ inputs.os }}"
+    name: "Build PHP ${{ inputs.php-version }} on ${{ inputs.os }}"
     runs-on: ${{ needs.define-build.outputs.run }}
     needs: define-build
     timeout-minutes: 240
@@ -231,7 +232,7 @@ jobs:
       - name: "Setup PHP"
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: ${{ inputs.php-version }}
           tools: pecl, composer
           extensions: curl, openssl, mbstring
           ini-values: memory_limit=-1
